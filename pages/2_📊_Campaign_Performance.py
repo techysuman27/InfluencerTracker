@@ -98,27 +98,45 @@ with col4:
     st.metric("Total Revenue", f"₹{total_revenue:,.0f}")
 
 with col5:
-    # Direct conversion rate calculation - with debugging
-    total_reach = posts_df['reach'].sum()
-    
-    # Get total orders directly
-    if 'orders' in tracking_df.columns and not tracking_df['orders'].isna().all():
-        total_orders = tracking_df['orders'].sum()
-        orders_source = "orders column"
-    else:
-        total_orders = len(tracking_df)
-        orders_source = "record count"
-    
-    # Calculate conversion rate directly
-    if total_reach > 0 and total_orders > 0:
-        conversion_rate = (total_orders / total_reach) * 100
-    else:
+    # Robust conversion rate calculation handling all edge cases
+    try:
+        # Ensure we have valid dataframes
+        if posts_df.empty or tracking_df.empty:
+            conversion_rate = 0.0
+        else:
+            # Get total reach with type conversion and null handling
+            total_reach = pd.to_numeric(posts_df['reach'], errors='coerce').fillna(0).sum()
+            
+            # Get total orders with multiple fallback strategies
+            total_orders = 0
+            orders_source = "no data"
+            
+            # Strategy 1: Check for 'orders' column
+            if 'orders' in tracking_df.columns:
+                orders_series = pd.to_numeric(tracking_df['orders'], errors='coerce').fillna(0)
+                if orders_series.sum() > 0:
+                    total_orders = orders_series.sum()
+                    orders_source = "orders column"
+            
+            # Strategy 2: Use record count if no valid orders
+            if total_orders == 0 and len(tracking_df) > 0:
+                total_orders = len(tracking_df)
+                orders_source = "record count"
+            
+            # Calculate conversion rate
+            if total_reach > 0 and total_orders > 0:
+                conversion_rate = (float(total_orders) / float(total_reach)) * 100
+            else:
+                conversion_rate = 0.0
+                
+    except Exception as e:
+        # Fallback in case of any calculation errors
         conversion_rate = 0.0
+        total_reach = 0
+        total_orders = 0
+        orders_source = "error"
     
     st.metric("Conversion Rate", f"{conversion_rate:.2f}%")
-    
-    # Temporary debug info
-    st.caption(f"Debug: Reach={total_reach:,}, Orders={total_orders:,} ({orders_source}), Rate={(total_orders/total_reach*100 if total_reach>0 else 0):.2f}%")
 
 # Charts Section
 st.header("📈 Performance Visualizations")

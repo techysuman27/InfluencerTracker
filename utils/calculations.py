@@ -156,23 +156,34 @@ def calculate_engagement_rate(posts_df: pd.DataFrame) -> float:
     return (total_engagement / total_reach) * 100
 
 def calculate_conversion_rate(posts_df: pd.DataFrame, tracking_df: pd.DataFrame) -> float:
-    """Calculate conversion rate: (orders / reach) * 100"""
-    if posts_df.empty or tracking_df.empty:
+    """Calculate conversion rate: (orders / reach) * 100 with robust error handling"""
+    try:
+        if posts_df.empty or tracking_df.empty:
+            return 0.0
+        
+        # Handle reach with type conversion and null values
+        total_reach = pd.to_numeric(posts_df['reach'], errors='coerce').fillna(0).sum()
+        
+        # Handle orders with multiple strategies
+        total_orders = 0
+        
+        # Strategy 1: Use orders column if available and valid
+        if 'orders' in tracking_df.columns:
+            orders_series = pd.to_numeric(tracking_df['orders'], errors='coerce').fillna(0)
+            total_orders = orders_series.sum()
+        
+        # Strategy 2: Use record count as fallback
+        if total_orders == 0:
+            total_orders = len(tracking_df)
+        
+        # Calculate with proper type conversion
+        if total_reach > 0:
+            return (float(total_orders) / float(total_reach)) * 100
+        else:
+            return 0.0
+            
+    except Exception:
         return 0.0
-    
-    total_reach = posts_df['reach'].sum()
-    
-    # Get total orders - check if orders column exists
-    if 'orders' in tracking_df.columns:
-        total_orders = tracking_df['orders'].sum()
-    else:
-        total_orders = len(tracking_df)  # Use record count as orders
-    
-    if total_reach == 0:
-        return 0.0
-    
-    # Simple division: orders / reach * 100
-    return (total_orders / total_reach) * 100
 
 def calculate_influencer_score(engagement_rate: float, conversion_rate: float, roi: float) -> float:
     """Calculate a composite influencer performance score"""
