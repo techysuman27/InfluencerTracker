@@ -59,6 +59,11 @@ if selected_platform != 'All':
 # Calculate comprehensive ROI metrics
 def calculate_roi_metrics():
     """Calculate comprehensive ROI and ROAS metrics"""
+    
+    # Debug: Print available columns
+    st.write("Available columns in tracking_data:", list(tracking_df.columns))
+    st.write("Available columns in payouts:", list(payouts_df.columns))
+    
     # Merge tracking data with payouts
     roi_data = tracking_df.merge(
         payouts_df,
@@ -66,15 +71,32 @@ def calculate_roi_metrics():
         how='left'
     )
     
+    st.write("Available columns after merge:", list(roi_data.columns))
+    
     # Fill missing payout data
     roi_data['total_payout'] = roi_data['total_payout'].fillna(0)
     
+    # Check if 'orders' column exists, if not use available numeric columns
+    order_col = 'orders' if 'orders' in roi_data.columns else None
+    
+    if order_col is None:
+        # Find a suitable order-like column
+        numeric_cols = roi_data.select_dtypes(include=[np.number]).columns
+        st.write("Available numeric columns:", list(numeric_cols))
+        # Create a default orders column if needed
+        roi_data['orders'] = 1  # Default to 1 order per record
+        order_col = 'orders'
+    
     # Calculate metrics by influencer
-    influencer_roi = roi_data.groupby('influencer_id').agg({
-        'orders': 'sum',
+    agg_dict = {
         'revenue': 'sum',
         'total_payout': 'first'  # Payout is per influencer, not per transaction
-    }).reset_index()
+    }
+    
+    if order_col in roi_data.columns:
+        agg_dict[order_col] = 'sum'
+    
+    influencer_roi = roi_data.groupby('influencer_id').agg(agg_dict).reset_index()
     
     # Calculate ROI and ROAS
     influencer_roi['roi'] = np.where(
@@ -90,11 +112,15 @@ def calculate_roi_metrics():
     )
     
     # Calculate metrics by campaign
-    campaign_roi = roi_data.groupby('campaign').agg({
-        'orders': 'sum',
+    campaign_agg_dict = {
         'revenue': 'sum',
         'total_payout': 'sum'
-    }).reset_index()
+    }
+    
+    if order_col in roi_data.columns:
+        campaign_agg_dict[order_col] = 'sum'
+    
+    campaign_roi = roi_data.groupby('campaign').agg(campaign_agg_dict).reset_index()
     
     campaign_roi['roi'] = np.where(
         campaign_roi['total_payout'] > 0,
