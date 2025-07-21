@@ -237,14 +237,8 @@ if not insights_df.empty:
     )
     
     # Add quadrant lines
-    fig_matrix.add_hline(y=median_roi, line_dash="dash", line_color="gray", opacity=0.5)
-    fig_matrix.add_vline(x=median_engagement, line_dash="dash", line_color="gray", opacity=0.5)
-    
-    # Add quadrant labels
-    fig_matrix.add_annotation(x=median_engagement*1.5, y=median_roi*1.5, text="⭐ Stars", showarrow=False)
-    fig_matrix.add_annotation(x=median_engagement*0.5, y=median_roi*1.5, text="💰 Cash Cows", showarrow=False)
-    fig_matrix.add_annotation(x=median_engagement*1.5, y=median_roi*0.5, text="❓ Question Marks", showarrow=False)
-    fig_matrix.add_annotation(x=median_engagement*0.5, y=median_roi*0.5, text="🐶 Dogs", showarrow=False)
+    fig_matrix.add_hline(y=median_roi, line_dash="dash", line_color="gray", opacity=0.3)
+    fig_matrix.add_vline(x=median_engagement, line_dash="dash", line_color="gray", opacity=0.3)
     
     fig_matrix.update_layout(height=500)
     st.plotly_chart(fig_matrix, use_container_width=True)
