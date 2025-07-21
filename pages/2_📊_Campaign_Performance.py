@@ -20,7 +20,7 @@ data_status = st.session_state.data_processor.get_data_status()
 if not data_status['all_uploaded']:
     st.warning("Please upload all required datasets first.")
     if st.button("Go to Data Upload"):
-        st.switch_page("pages/data_upload.py")
+        st.switch_page("pages/1_📤_Data_Upload.py")
     st.stop()
 
 # Get data

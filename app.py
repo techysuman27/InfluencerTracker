@@ -95,19 +95,19 @@ if data_status['all_uploaded']:
     
     with col1:
         if st.button("📊 Campaign Performance", use_container_width=True):
-            st.switch_page("pages/campaign_performance.py")
+            st.switch_page("pages/2_📊_Campaign_Performance.py")
     
     with col2:
         if st.button("👥 Influencer Insights", use_container_width=True):
-            st.switch_page("pages/influencer_insights.py")
+            st.switch_page("pages/3_👥_Influencer_Insights.py")
     
     with col3:
         if st.button("💰 ROI Analysis", use_container_width=True):
-            st.switch_page("pages/roi_analysis.py")
+            st.switch_page("pages/5_💰_ROI_Analysis.py")
     
     with col4:
         if st.button("💳 Payout Tracking", use_container_width=True):
-            st.switch_page("pages/payout_tracking.py")
+            st.switch_page("pages/4_💳_Payout_Tracking.py")
 
 else:
     # Welcome message for new users
@@ -123,7 +123,7 @@ else:
     """)
     
     if st.button("📤 Go to Data Upload", use_container_width=True):
-        st.switch_page("pages/data_upload.py")
+        st.switch_page("pages/1_📤_Data_Upload.py")
     
     st.markdown("---")
     st.markdown("### 📋 Expected Data Format")
