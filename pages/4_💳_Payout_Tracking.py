@@ -317,10 +317,14 @@ st.subheader("Influencer Payout Details")
 
 if not payout_details.empty:
     # Add performance metrics to payout details
-    tracking_summary = data['tracking_data'].groupby('influencer_id').agg({
-        'orders': 'sum',
-        'revenue': 'sum'
-    }).reset_index()
+    tracking_cols = data['tracking_data'].columns.tolist()
+    
+    # Check available columns and create aggregation dict
+    agg_dict = {'revenue': 'sum'}
+    if 'orders' in tracking_cols:
+        agg_dict['orders'] = 'sum'
+    
+    tracking_summary = data['tracking_data'].groupby('influencer_id').agg(agg_dict).reset_index()
     
     detailed_payouts = payout_details.merge(
         tracking_summary,
@@ -335,20 +339,28 @@ if not payout_details.empty:
         0
     )
     
-    detailed_payouts['cost_per_order'] = np.where(
-        detailed_payouts['orders'] > 0,
-        detailed_payouts['total_payout'] / detailed_payouts['orders'],
-        0
-    )
+    # Only calculate cost per order if orders column exists
+    if 'orders' in detailed_payouts.columns:
+        detailed_payouts['cost_per_order'] = np.where(
+            detailed_payouts['orders'] > 0,
+            detailed_payouts['total_payout'] / detailed_payouts['orders'],
+            0
+        )
+    else:
+        detailed_payouts['cost_per_order'] = 0
     
     # Sort by total payout descending
     detailed_payouts = detailed_payouts.sort_values('total_payout', ascending=False)
     
+    # Select columns that exist
+    display_cols = ['name', 'category', 'platform', 'basis', 'rate', 'total_payout', 'revenue', 'revenue_per_rupee', 'cost_per_order']
+    if 'orders' in detailed_payouts.columns:
+        display_cols.insert(5, 'orders')  # Insert orders after rate
+    
+    available_cols = [col for col in display_cols if col in detailed_payouts.columns]
+    
     st.dataframe(
-        detailed_payouts[[
-            'name', 'category', 'platform', 'basis', 'rate', 'orders', 
-            'total_payout', 'revenue', 'revenue_per_rupee', 'cost_per_order'
-        ]],
+        detailed_payouts[available_cols],
         use_container_width=True,
         column_config={
             'rate': st.column_config.NumberColumn('Rate (₹)', format='₹%.0f'),
