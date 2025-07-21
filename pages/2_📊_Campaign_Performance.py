@@ -98,22 +98,27 @@ with col4:
     st.metric("Total Revenue", f"₹{total_revenue:,.0f}")
 
 with col5:
-    # Direct conversion rate calculation - no function call
+    # Direct conversion rate calculation - with debugging
     total_reach = posts_df['reach'].sum()
     
     # Get total orders directly
     if 'orders' in tracking_df.columns and not tracking_df['orders'].isna().all():
         total_orders = tracking_df['orders'].sum()
+        orders_source = "orders column"
     else:
-        total_orders = len(tracking_df)  # Use record count as orders
+        total_orders = len(tracking_df)
+        orders_source = "record count"
     
     # Calculate conversion rate directly
-    if total_reach > 0:
+    if total_reach > 0 and total_orders > 0:
         conversion_rate = (total_orders / total_reach) * 100
     else:
         conversion_rate = 0.0
     
     st.metric("Conversion Rate", f"{conversion_rate:.2f}%")
+    
+    # Temporary debug info
+    st.caption(f"Debug: Reach={total_reach:,}, Orders={total_orders:,} ({orders_source}), Rate={(total_orders/total_reach*100 if total_reach>0 else 0):.2f}%")
 
 # Charts Section
 st.header("📈 Performance Visualizations")
