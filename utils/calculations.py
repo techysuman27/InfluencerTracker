@@ -156,22 +156,22 @@ def calculate_engagement_rate(posts_df: pd.DataFrame) -> float:
     return (total_engagement / total_reach) * 100
 
 def calculate_conversion_rate(posts_df: pd.DataFrame, tracking_df: pd.DataFrame) -> float:
-    """Calculate conversion rate from posts to orders"""
+    """Calculate conversion rate: (orders / reach) * 100"""
     if posts_df.empty or tracking_df.empty:
         return 0.0
     
     total_reach = posts_df['reach'].sum()
     
-    # Check if 'orders' column exists, if not use alternative approaches
+    # Get total orders - check if orders column exists
     if 'orders' in tracking_df.columns:
         total_orders = tracking_df['orders'].sum()
     else:
-        # Use number of tracking records as proxy for orders/conversions
-        total_orders = len(tracking_df)
+        total_orders = len(tracking_df)  # Use record count as orders
     
     if total_reach == 0:
         return 0.0
     
+    # Simple division: orders / reach * 100
     return (total_orders / total_reach) * 100
 
 def calculate_influencer_score(engagement_rate: float, conversion_rate: float, roi: float) -> float:

@@ -100,15 +100,6 @@ with col4:
 with col5:
     conversion_rate = calculate_conversion_rate(posts_df, tracking_df)
     st.metric("Conversion Rate", f"{conversion_rate:.2f}%")
-    
-    # Debug info - remove after fixing
-    st.write(f"Debug - Reach: {posts_df['reach'].sum()}")
-    st.write(f"Debug - Orders column exists: {'orders' in tracking_df.columns}")
-    if 'orders' in tracking_df.columns:
-        st.write(f"Debug - Orders sum: {tracking_df['orders'].sum()}")
-    else:
-        st.write(f"Debug - Tracking records: {len(tracking_df)}")
-    st.write(f"Debug - Tracking columns: {list(tracking_df.columns)}")
 
 # Charts Section
 st.header("📈 Performance Visualizations")
