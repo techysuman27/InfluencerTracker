@@ -172,7 +172,15 @@ with col2:
         size='comments',
         color='platform',
         title="Reach vs Likes (Size = Comments)",
-        hover_data=['influencer_id']
+        hover_data=['influencer_id'],
+        size_max=15  # Limit maximum dot size
+    )
+    # Further customize dot sizes
+    fig_engagement.update_traces(
+        marker=dict(
+            sizemin=3,  # Minimum dot size
+            sizemode='diameter'
+        )
     )
     fig_engagement.update_layout(height=400)
     st.plotly_chart(fig_engagement, use_container_width=True)
