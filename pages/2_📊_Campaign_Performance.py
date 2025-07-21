@@ -85,7 +85,12 @@ with col2:
     st.metric("Engagement Rate", f"{engagement_rate:.2f}%")
 
 with col3:
-    total_orders = tracking_df['orders'].sum()
+    # Check if orders column exists
+    if 'orders' in tracking_df.columns:
+        total_orders = tracking_df['orders'].sum()
+    else:
+        # Use number of tracking records as orders
+        total_orders = len(tracking_df)
     st.metric("Total Orders", total_orders)
 
 with col4:

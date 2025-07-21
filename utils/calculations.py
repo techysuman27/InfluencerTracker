@@ -161,7 +161,13 @@ def calculate_conversion_rate(posts_df: pd.DataFrame, tracking_df: pd.DataFrame)
         return 0.0
     
     total_reach = posts_df['reach'].sum()
-    total_orders = tracking_df['orders'].sum()
+    
+    # Check if 'orders' column exists, if not use alternative approaches
+    if 'orders' in tracking_df.columns:
+        total_orders = tracking_df['orders'].sum()
+    else:
+        # Use number of tracking records as proxy for orders/conversions
+        total_orders = len(tracking_df)
     
     if total_reach == 0:
         return 0.0
