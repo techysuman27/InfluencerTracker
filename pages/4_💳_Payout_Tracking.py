@@ -467,6 +467,10 @@ if not detailed_payouts.empty:
     
     with col1:
         st.subheader("Current Budget Distribution")
+        # Add budget category if it doesn't exist
+        if 'budget_category' not in detailed_payouts.columns:
+            detailed_payouts['budget_category'] = detailed_payouts['category']  # Use influencer category as fallback
+        
         current_budget = detailed_payouts.groupby('budget_category')['total_payout'].sum()
         st.dataframe(
             current_budget.reset_index(),

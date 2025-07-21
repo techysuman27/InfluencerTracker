@@ -8,6 +8,20 @@ This is a comprehensive Streamlit-based analytics dashboard for tracking and ana
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (December 2024)
+
+### Navigation Structure Fixed
+- Removed duplicate navigation entries that were causing confusion
+- Implemented proper page ordering with emojis: app → Data Upload → Campaign Performance → Influencer Insights → Payout Tracking → ROI Analysis
+- Updated all internal page references to match new file naming structure
+
+### Data Model Compatibility Updates  
+- Fixed column reference errors for missing 'orders' and 'budget_category' columns
+- Added dynamic column checking to handle different data schemas gracefully
+- Implemented fallback logic for missing data columns with appropriate defaults
+- Created local calculation functions for incremental ROAS and attribution models
+- Ensured ROI Analysis and Payout Tracking pages work with various data structures
+
 ## System Architecture
 
 ### Frontend Architecture

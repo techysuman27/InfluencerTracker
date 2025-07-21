@@ -360,9 +360,15 @@ with col2:
         
         attributed_revenue = total_revenue * attribution_factor
         
+        # Calculate attributed ROAS
+        total_cost = payouts_df['total_payout'].sum() if not payouts_df.empty else 1
+        attributed_roas = attributed_revenue / total_cost if total_cost > 0 else 0
+        
         return {
             'attributed_revenue': attributed_revenue,
-            'attribution_factor': attribution_factor
+            'attribution_factor': attribution_factor,
+            'attributed_roas': attributed_roas,
+            'confidence': attribution_factor * 100
         }
     
     attribution_results = calculate_attribution_model_local(tracking_df, attribution_model)
