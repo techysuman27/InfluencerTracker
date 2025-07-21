@@ -5,7 +5,7 @@ from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
 from utils.data_processor import DataProcessor
-from utils.calculations import calculate_incremental_roas, calculate_attribution_model
+from utils.calculations import ROICalculator
 
 st.set_page_config(page_title="ROI Analysis", page_icon="💰", layout="wide")
 
