@@ -1,3 +1,11 @@
+[tool.poetry]
+name = "influencertracker"
+version = "0.1.0"
+description = "..."
+authors = ["Suman Sadhukhan <sumanxdata.netlify.app>"]
+
+# Add this line to pin yourself below Py 4.0:
+python = ">=3.12,<4.0"
 [project]
 name = "repl-nix-workspace"
 version = "0.1.0"
