@@ -173,12 +173,12 @@ with col2:
         color='platform',
         title="Reach vs Likes (Size = Comments)",
         hover_data=['influencer_id'],
-        size_max=15  # Limit maximum dot size
+        size_max=4  # Limit maximum dot size
     )
     # Further customize dot sizes
     fig_engagement.update_traces(
         marker=dict(
-            sizemin=3,  # Minimum dot size
+            sizemin=2,  # Minimum dot size
             sizemode='diameter'
         )
     )
